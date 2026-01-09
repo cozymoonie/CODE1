@@ -1,0 +1,30 @@
+(function () {
+  // Assign unique tab ID (once per tab)
+  if (!window.myTabId) {
+    const tabId = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    sessionStorage.setItem("tabId", tabId);
+    window.myTabId = tabId;
+  }
+
+  const bc = new BroadcastChannel("close_other_tabs_channel");
+
+  bc.onmessage = function (event) {
+    const data = event.data;
+
+    if (data.type === "close_other_tabs" && data.activeTabId !== window.myTabId) {
+      // Optionally match session too
+      window.close();
+    //   window.reload();
+     apex.page.cancel();
+      setTimeout(() => {
+        // window.location.href = "about:blank";
+        window.location.href = "f?p=&APP_ID.:home:&SESSION.";
+        // window.location.reload();
+        window.location.close();
+      }, 100); // Fallback if tab not closable
+    }
+  };
+})();
+
+
+
